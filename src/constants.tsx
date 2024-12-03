@@ -18,3 +18,13 @@ export async function useModel(msg: string) {
   return res;
   //   console.log({ result: await res });
 }
+
+export function log(msg: any) {
+  if (process.env.NODE_ENV === "development") {
+    // console.log(msg);
+    console.log(
+      `%c${msg}`,
+      "background: blue; color: white; padding: 2px 4px; border-radius: 2px;"
+    );
+  }
+}

@@ -1,11 +1,15 @@
 "use client";
-import { useModel } from "@/constants";
+import { log, useModel } from "@/constants";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Suspense, use, useEffect, useState } from "react";
 
 export default function Home() {
   const router = useRouter();
+  if (process.env.NODE_ENV != "development") {
+    router.push("/landing");
+  }
+
   const [data, setData] = useState<string>("");
 
   interface IContext {
@@ -27,6 +31,8 @@ export default function Home() {
     return JSON.stringify({
       type: "query",
       response_type: "json",
+      strictly_return_json: true,
+      only_json: true,
       write_json: false,
       use_backticks: false,
       contexts: [designContext, technicalContext],
@@ -49,17 +55,18 @@ export default function Home() {
         prev: undefined,
       })
     );
-    console.log({ dat });
-    setData(await dat.result);
+    if (dat.result.startsWith("```json")) {
+      setData(dat.result.slice(7, -4).trim());
+    } else {
+      setData(dat.result);
+    }
+    log(data);
+    // setData(await dat.re sult);
   };
 
   useEffect(() => {
     f();
   }, []);
-
-  if (process.env.NODE_ENV != "development") {
-    router.push("/landing");
-  }
 
   return (
     <div className="">
